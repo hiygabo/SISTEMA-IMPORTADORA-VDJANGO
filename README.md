@@ -66,9 +66,9 @@ En la sección `DATABASES`, adapta las credenciales a las de tu sistema Oracle:
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.oracle',
-        'NAME': 'localhost:1521/xe',       # <--- URL o Nombre de servicio de tu Oracle
-        'USER': 'importadora_db',              # <--- Tu usuario creado en el DB
-        'PASSWORD': '123456',       # <--- Contraseña del DB
+        'NAME': 'localhost:1521/xe',      
+        'USER': 'importadora_db',             
+        'PASSWORD': '123456',       
         'HOST': '',
         'PORT': ''
     }
