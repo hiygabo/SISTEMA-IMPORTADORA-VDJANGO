@@ -1,0 +1,11 @@
+{% extends 'app/Base.html' %}
+{% block content %}
+    <div class="login-center">
+        <form method="POST">
+            {% csrf_token %}
+            {{form.as_p}}
+            <button type="submit"> INGRESAR</button>
+        </form>
+    </div>
+
+{% endblock content %}

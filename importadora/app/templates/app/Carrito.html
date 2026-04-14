@@ -1,0 +1,39 @@
+{% extends 'app/Base.html' %}
+
+{% block content %}
+    <h2>Carrito de compras</h2>
+
+    {% if productosEnCarrito %}
+        <table>
+            <tr>
+                <th>Producto</th>
+                <th>Precio</th>
+                <th>Cantidad</th>
+                <th>Subtotal</th>
+            </tr>
+            {% for item in productosEnCarrito %}
+                <tr>
+                    <td>{{item.producto.nombre}}</td>
+                    <td>{{item.producto.precio}}Bs.</td>
+                    <td>{{item.cantidad}}</td>
+                    <td>{{item.subtotal}}Bs.</td>
+                </tr>
+            {% endfor %}
+            <tr>
+                <td>Total: {{total}}</td>
+            </tr>
+        </table><br>
+
+        <form action="{% url 'confirmarPedido' %}" method="POST">
+            {% csrf_token %}
+            <label for="nombre_cliente">Nombre Cliente</label>
+            <input type="text" name="nombre_cliente" required>
+            <button type="submit">Enivar al cajero</button>
+        </form>
+    {% else %}
+        <p>El carrito esta vacio</p>
+    {% endif %}
+    <br>
+    <a href="{% url 'listarProductos' %}">volver al panel de productos</a>
+{% endblock content %}
+    

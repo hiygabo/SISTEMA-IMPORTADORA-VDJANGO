@@ -1,0 +1,9 @@
+{% extends "app/Base.html" %}
+{% block content %}
+    <form method="post">
+        {% csrf_token %}
+        {{form.as_p}}
+        <button type="submit"> guardar cambios</button>
+    </form>
+
+{% endblock content %}

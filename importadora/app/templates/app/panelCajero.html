@@ -1,0 +1,25 @@
+{% extends 'app/Base.html' %}
+{% block content %}
+    
+    <table>
+        <tr>
+            <th>NOMBRE CLIENTE</th>
+            <th>FECHA</th>
+            <th>ESTADO</th>
+            <th>ACCION</th>
+        </tr>
+        {% for pe in pedidos %}
+            <tr>
+                <td>{{pe.nombre_cliente}}</td>
+                <td>{{pe.fecha}}</td>
+                <td>{{pe.estado}}</td>
+                <td><a href="{% url 'cobrarPedido' pe.id_pedido %}">Cobrar Pedido</a></td>
+            </tr>
+        
+        {% endfor %}
+
+    </table>
+        
+
+
+{% endblock content %}

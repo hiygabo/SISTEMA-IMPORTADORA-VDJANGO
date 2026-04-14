@@ -76,8 +76,8 @@ WSGI_APPLICATION = 'importadora.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.oracle',
-        'NAME': 'localhost:1521/XEPDB1',
-        'USER': 'importadora',
+        'NAME': 'localhost:1521/xe',
+        'USER': 'importadora_db',
         'PASSWORD': '123456',
         'HOST': '',
         'PORT': ''
