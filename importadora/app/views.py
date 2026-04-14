@@ -11,8 +11,13 @@ def saludo(request):
     return HttpResponse("prueba exitosa")
 
 def listarProductos(request):
-    productos = Producto.objects.all()
-    return render(request, 'app/Productos.html', {'productos':productos})
+    terminoBusqueda = request.GET.get('q', '')
+    if terminoBusqueda:
+        productos = Producto.objects.filter(nombre__icontains=terminoBusqueda)
+    else:
+        
+        productos = Producto.objects.all()
+    return render(request, 'app/Productos.html', {'productos':productos, 'q': terminoBusqueda})
 
 def crearProductos(request):
     if request.session.get('usuario_rol') != 'admin':

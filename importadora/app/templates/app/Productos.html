@@ -1,5 +1,17 @@
 {% extends "app/Base.html" %}
 {% block content %}
+<div style="margin-bottom: 20px; display: flex; justify-content: flex-end;">
+        <form method="GET" action="{% url 'listarProductos' %}" style="display: flex; gap: 10px; margin: 0; padding: 0; width: 100%; max-width: 450px; background: transparent; border: none;">
+            
+            <input type="text" name="q" value="{{ q }}" placeholder="Buscar por nombre..." style="flex: 1;">
+            <button type="submit" style="white-space: nowrap;">Buscar</button>
+            
+            {% if q %}
+                <a href="{% url 'listarProductos' %}" class="btn" style="background: #e4e2dd; color: #545951;">Limpiar</a>
+            {% endif %}
+            
+        </form>
+    </div>
     <table>
         <tr>
             <th>ID</th>
