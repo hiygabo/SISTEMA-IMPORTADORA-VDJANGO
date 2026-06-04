@@ -15,4 +15,5 @@ urlpatterns = [
     path('confirmarPedido/', views.confirmarPedido, name='confirmarPedido' ),
     path('agregarAlcarrito/<int:id_producto>/', views.agregarAlCarrito, name='agregarAlCarrito'),
     path('verCarrito/', views.verCarrito, name='verCarrito'),
+    path('factura/pdf/<int:id_pedido>', views.factura_pdf, name ='factura_pdf'),
 ]

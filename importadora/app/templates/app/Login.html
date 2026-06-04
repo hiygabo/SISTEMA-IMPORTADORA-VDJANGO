@@ -1,10 +1,14 @@
 {% extends 'app/Base.html' %}
+{% load static %}
 {% block content %}
     <div class="login-center">
-        <form method="POST">
+        <form method="POST" class="login-form">
+            <div style="text-align:center; margin-bottom:20px;">
+                <img src="{% static 'img/LogoImp.png' %}" alt="Importadora Miranda" style="height:60px; width:auto;">
+            </div>
             {% csrf_token %}
             {{form.as_p}}
-            <button type="submit"> INGRESAR</button>
+            <button type="submit">INGRESAR</button>
         </form>
     </div>
 

@@ -50,7 +50,7 @@ class Producto(models.Model):
     precio = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     stock = models.IntegerField(blank=True, null=True)
     id_categoria = models.ForeignKey(Categoria, models.DO_NOTHING, db_column='id_categoria', blank=True, null=True)
-
+    imagen_url = models.CharField(max_length=1000, blank=True, null=True)
     class Meta:
         managed = False
         db_table = 'producto'

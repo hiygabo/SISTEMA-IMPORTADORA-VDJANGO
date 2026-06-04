@@ -5,7 +5,10 @@ from .models import *
 from .forms import *
 from django.db import transaction
 from datetime import *
-
+from django.template.loader import render_to_string
+from django.conf import settings
+from xhtml2pdf import pisa
+from django.db.models import Sum
 # Create your views here.
 def saludo(request):
     return HttpResponse("prueba exitosa")
@@ -16,7 +19,7 @@ def listarProductos(request):
         productos = Producto.objects.filter(nombre__icontains=terminoBusqueda)
     else:
         
-        productos = Producto.objects.all()
+        productos = Producto.objects.all()[:10]
     return render(request, 'app/Productos.html', {'productos':productos, 'q': terminoBusqueda})
 
 def crearProductos(request):
@@ -100,7 +103,7 @@ def cobrarPedido(request, id_pedido):
     pedido.save()
     
     messages.success(request,'pedido cobrado exitosamente')
-    return redirect('panelCajero')
+    return redirect('factura_pdf', id_pedido =id_pedido)
 
 
 def confirmarPedido(request):
@@ -169,4 +172,27 @@ def verCarrito(request):
             'subtotal' : subtotal
         })
     return render(request, 'app/Carrito.html', {'productosEnCarrito' : productosEnCarrito, 'total': totalPedido })
+    
+    
+def factura_pdf(request, id_pedido):
+    pedido = get_object_or_404(Pedido, id_pedido = id_pedido)
+    detalles = DetallePedido.objects.filter(id_pedido=pedido)
+    total = detalles.aggregate(total=Sum('subtotal'))['total'] or 0
+
+    logo_path = settings.BASE_DIR / 'static' / 'img' / 'LogoImp.png'
+    
+    html = render_to_string('app/factura_pdf.html', {
+        'pedido': pedido,
+        'detalles': detalles,
+        'total': total,
+        'logo_path': logo_path,
+    })
+    
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'filename=factura_{id_pedido}.pdf'
+    pisa_status = pisa.CreatePDF(html, dest=response)
+    
+    if pisa_status.err:
+        return HttpResponse('Error al generar el pdf', status=500)
+    return response
     
