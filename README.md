@@ -1,89 +1,63 @@
-# SISTEMA IMPORTADORA
+# MIRANDA IMPORT MANAGEMENT SYSTEM
 
-**Desarrollado por:** Gabriel Omar Andia Alave
+**Developed by:** Gabriel Omar Andia Alave
 
-Sistema web transaccional desarrollado con Django y Oracle Database. Cuenta con interfaz minimalista basada en "Flat Design" de estilo escandinavo (UI/UX 100% responsiva). Gestiona flujos de caja, control de productos y carrito de compras mediante una lógica basada enteramente en sesiones y roles.
+A transactional web system developed with Django and Oracle Database. It features a minimalist "Flat Design" with a Scandinavian aesthetic (100% responsive UI/UX). It efficiently manages cash flows, inventory control, and a shopping cart using logic entirely based on sessions and user roles.
 
-## Funcionalidades Principales
+## System Purpose
 
-El sistema controla accesos basados en tres roles específicos (`admin`, `trabajador`, `cajero`).
+The primary purpose of the system is to manage the store's product catalog and streamline the checkout process. Sales representatives or customers send a selected list of products along with the customer's name directly to the cashier.
+- Upon receiving the product list and the customer's name, the cashier processes the payment with a single click linked to the customer's reference, automatically generating an invoice with all product and customer details.
+- Once the payment is completed at the register, the pending order is cleared from the queue.
 
-1. **Admin (Administración):**
-   - Panel de gestión absoluta del inventario.
-   - Puede Crear, Editar y Eliminar productos directamente afectando a la base de datos Oracle.
-2. **Trabajador (Vendedores):**
-   - Acceso al catálogo de productos y barra de búsqueda optimizada (Django ORM `__icontains`).
-   - Carrito temporal gestionado en la Memoria/Caché (`request.session['carrito']`) sin saturar la Base de Datos con envíos no aprobados.
-   - Envío de Pedidos: Registra automáticamente los detalles (cantidades y subtotales) debitando el stock, almacenándolo atómicamente con `transaction.atomic()`, y dejándolo en estado "Pendiente".
-3. **Cajero (Caja y Facturación):**
-   - Acceso exclusivo al panel "Pendientes".
-   - Encargado exclusivo de revisar la integridad de la orden y marcarla con un botón como "Cobrado", cambiando el estado definitivo del pedido en la base de datos.
-4. **Login Manual Seguro:** 
-   - Control nativo de identidades utilizando la tabla preexistente de Oracle `usuario`. Validación manual redireccionando automáticamente a pantallas bloqueadas según el rol del logueado.
+## Core Features
+
+The system enforces strict access control based on three specific roles (`admin`, `worker`, `cashier`).
+
+1. **Admin (Administration):**
+   - Full inventory management dashboard.
+   - Can Create, Read, Update, and Delete (CRUD) products, with changes reflecting directly in the Oracle database.
+2. **Worker (Sales):**
+   - Access to the product catalog with an optimized search bar (using Django ORM's `__icontains`).
+   - Temporary shopping cart managed in Memory/Cache (`request.session['carrito']`), preventing database saturation with unapproved orders.
+   - Order Submission: Automatically records details (quantities and subtotals), deducts from stock, saves atomically using `transaction.atomic()`, and flags the order as "Pending".
+3. **Cashier (Checkout and Billing):**
+   - Exclusive access to the "Pending Orders" dashboard.
+   - Solely responsible for reviewing order integrity and marking it as "Paid" via a dedicated button, which permanently updates the order status in the database.
+   - Generates an automatic invoice upon payment completion.
+4. **Secure Custom Login:** - Native identity control utilizing a pre-existing Oracle `usuario` table. Features manual validation with automatic redirection to role-restricted views.
 
 ---
 
-## Pasos para Instalación y Despliegue
+## Installation and Deployment Guide
 
-### 1. Requisitos Previos
-- **Python** (versión 3.9 o superior).
-- Motor de **Oracle Database** (ej: Oracle XE local o conectado a servidor remoto) o gestor como DBeaver/SQL Developer.
+### 1. Prerequisites
+- **Python** (version 3.9 or higher).
+- **Oracle Database** engine (e.g., Oracle XE local or connected to a remote server), or a DB manager like DBeaver/SQL Developer.
 
-### 2. Configurar la Base de Datos (Oracle)
-Dentro de la raíz de este proyecto encontrarás el archivo **`script_bd.sql`**. Necesitas ejecutarlo íntegramente en tu gestor de base de datos favorito.
+### 2. Database Setup (Oracle)
+In the root of this project, you will find the **`script_bd.sql`** file. You need to execute this script entirely in your preferred database manager.
 
-Este script es el responsable de recrear la estructura exacta de manera independiente:
-- EN ORACLE LOGUEADO CON SYSTEM, SYS O USUARIO CON PRIVILEGIOS CREAR EL SIGUIENTE USUARIO:
+This script is responsible for accurately recreating the database structure:
+- Log in to Oracle using SYSTEM, SYS, or any user with DBA privileges and create the following user:
 - `CREATE USER importadora_db IDENTIFIED BY 123456;`
 - `GRANT ALL PRIVILEGES TO importadora_db;`
--  UNA VEZ EL USUARIO ESTE LISTO SIMPLEMENTE EJECUTAR EL SCRIPT script_db.sql CON ESE USUARIO PARA CREAR LA ESTRUCUTRA DE LA BASE DE DATOS Y LOS REGISTROS.
+- Once the user is ready, simply execute the `script_db.sql` script with this new user to generate the database structure and initial records.
 
-
-### 3. Clonar y Preparar el Proyecto (VS Code / Terminal)
+### 3. Clone and Setup the Project (VS Code / Terminal)
 
 ```bash
-# 1. Clonar el repositorio
-git clone https://github.com/hiygabo/SISTEMA-IMPORTADORA-VDJANGO.git
+# 1. Clone the repository
+git clone [https://github.com/hiygabo/SISTEMA-IMPORTADORA-VDJANGO.git](https://github.com/hiygabo/SISTEMA-IMPORTADORA-VDJANGO.git)
 
-# 2. Entrar a la carpeta raíz clonada
+# 2. Enter the cloned root folder
 cd SISTEMA-IMPORTADORA-VDJANGO
 
-# 3. Crear tu entorno virtual en Python
+# 3. Create a Python virtual environment
 python -m venv venv
 
-# 4. Activar el entorno (En powershell de Windows)
+# 4. Activate the environment (Windows PowerShell)
 .\venv\Scripts\activate
 
-# 5. Instalar Django y utilidades de Oracle (oracledb es el driver actual)
+# 5. Install Django and Oracle utilities (oracledb is the modern driver)
 pip install django oracledb
-```
-
-### 4. Configuración en `settings.py`
-Navega a `importadora/importadora/settings.py` y asegúrate de configurar tu conexión a Oracle. 
-En la sección `DATABASES`, adapta las credenciales a las de tu sistema Oracle:
-
-```python
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.oracle',
-        'NAME': 'localhost:1521/xe',       # <--- URL o Nombre de servicio de tu Oracle
-        'USER': 'importadora_db',              # <--- Tu usuario creado en el DB
-        'PASSWORD': '123456',       # <--- Contraseña del DB
-        'HOST': '',
-        'PORT': ''
-    }
-}
-```
-
-### 5. Correr el servidor
-Habiendo guardado el script y la configuración, procedemos a encender la aplicación:
-
-```bash
-# Entrar a la carpeta donde vive manage.py
-cd importadora
-
-# Arrancar el servidor
-python manage.py runserver
-```
-
-Visita **http://127.0.0.1:8000/** en un navegador web. El sistema reconocerá que no tienes sesión activa y te dirigirá instantáneamente al login blindado de Flat Design. 
