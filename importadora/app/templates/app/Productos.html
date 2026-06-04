@@ -31,6 +31,14 @@
                     </div>
                 </div>
             </div>
+        {% empty %}
+            <div class="empty-state" style="grid-column: 1 / -1;">
+                <svg viewBox="0 0 24 24" role="img">
+                    <path d="M19 6h-4V4c0-1.1-.9-2-2-2h-2c-1.1 0-2 .9-2 2v2H5c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-6 0h-4V4h4v2z"/>
+                </svg>
+                <h3>No hay elementos para mostrar</h3>
+                <p>No se encontraron productos</p>
+            </div>
         {% endfor %}
     </div>
 

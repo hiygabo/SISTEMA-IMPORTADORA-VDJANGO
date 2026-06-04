@@ -1,5 +1,14 @@
 {% extends 'app/Base.html' %}
 {% load static %}
+
+{% block extra_style %}
+<style>
+    body {
+        background: linear-gradient(135deg, #1A1A2E 0%, #2D1B69 50%, #1a2a3a 100%);
+    }
+</style>
+{% endblock %}
+
 {% block content %}
     <div class="login-center">
         <form method="POST" class="login-form">

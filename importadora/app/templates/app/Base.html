@@ -7,7 +7,7 @@
     <title>IMPORTADORA</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Nunito:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Nunito:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
             --brand-purple: #7B2D8B;
@@ -33,7 +33,9 @@
             margin: 0;
             font-family: "Nunito", "Segoe UI", sans-serif;
             color: #2d2d2d;
-            background: #f4f4f9;
+            background-color: #f0eef8;
+            background-image: radial-gradient(circle, #c9b8e8 1px, transparent 1px);
+            background-size: 28px 28px;
             line-height: 1.5;
             min-height: 100vh;
             display: flex;
@@ -61,6 +63,7 @@
             justify-content: space-between;
             gap: 12px;
             flex-wrap: wrap;
+            box-shadow: 0 2px 20px rgba(123, 45, 139, 0.4);
         }
 
         .nav-left, .nav-right {
@@ -80,6 +83,17 @@
             margin: 0;
             color: rgba(255,255,255,0.75);
             font-weight: 500;
+        }
+
+        .nav-username {
+            color: #00BCD4;
+            font-weight: 700;
+        }
+
+        .nav-right a:not(:last-child)::after {
+            content: ' |';
+            color: #E91E8C;
+            opacity: 0.5;
         }
 
         nav a {
@@ -150,6 +164,7 @@
             border-radius: 0;
             overflow: hidden;
             margin: 10px 0 20px;
+            box-shadow: 0 4px 24px rgba(123, 45, 139, 0.1);
         }
 
         th, td {
@@ -165,19 +180,26 @@
             font-family: "Poppins", sans-serif;
             font-weight: 600;
             letter-spacing: 0.02em;
+            box-shadow: 0 4px 12px rgba(123, 45, 139, 0.2);
         }
 
         tr:nth-child(even) {
-            background: #faf5fc;
+            background: #f7f3fc;
         }
 
         tr:nth-child(odd) {
             background: #ffffff;
         }
 
+        tr {
+            border-bottom: 1px solid #ede8f5;
+        }
+
         td a {
             margin-right: 10px;
             white-space: nowrap;
+            color: #E91E8C;
+            font-weight: 600;
         }
 
         /* ─── FORMULARIOS ─── */
@@ -278,6 +300,8 @@
             flex-direction: column;
             transition: box-shadow 0.3s ease, transform 0.2s ease;
             position: relative;
+            box-shadow: 0 4px 24px rgba(123, 45, 139, 0.12),
+                        0 1px 4px rgba(0,0,0,0.06);
         }
 
         .producto-card::before {
@@ -286,7 +310,7 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 4px;
+            height: 5px;
             background: var(--gradient-brand);
         }
 
@@ -295,7 +319,7 @@
             height: 150px;
             object-fit: cover;
             display: block;
-            border-bottom: 1px solid rgba(123,45,139,0.1);
+            border-bottom: 1px solid #e8e0f0;
         }
 
         .producto-body {
@@ -314,15 +338,15 @@
         }
 
         .producto-precio {
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             font-weight: 700;
             color: var(--brand-pink);
             margin: 0 0 4px;
         }
 
         .producto-categoria {
-            font-size: 0.85rem;
-            color: #777;
+            font-size: 0.78rem;
+            color: #999;
             margin: 0 0 14px;
         }
 
@@ -340,6 +364,7 @@
             border-image-slice: 1;
             background: var(--brand-dark);
             padding: 18px 18px;
+            box-shadow: 0 -2px 20px rgba(123, 45, 139, 0.3);
         }
 
         .footer-inner {
@@ -383,6 +408,8 @@
         .login-center {
             display: flex;
             justify-content: center;
+            align-items: center;
+            min-height: calc(100vh - 160px);
         }
 
         .login-center form {
@@ -395,13 +422,93 @@
             background: #ffffff;
             border: 1px solid rgba(123,45,139,0.15);
             padding: 36px 32px;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+            position: relative;
+            box-shadow: 0 8px 48px rgba(0, 0, 0, 0.4),
+                        0 0 0 1px rgba(233, 30, 140, 0.15);
+        }
+
+        .login-form::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #E91E8C, #7B2D8B, #00BCD4);
         }
 
         .login-form button {
             width: 100%;
             padding: 12px;
             font-size: 1rem;
+        }
+
+        /* ─── ESTADOS VACÍOS ─── */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 48px 24px;
+            text-align: center;
+        }
+
+        .empty-state svg {
+            width: 64px;
+            height: 64px;
+            fill: #7B2D8B;
+            margin-bottom: 16px;
+            opacity: 0.6;
+        }
+
+        .empty-state h3 {
+            color: #7B2D8B;
+            font-size: 1.2rem;
+            margin: 0 0 8px;
+        }
+
+        .empty-state p {
+            color: #999;
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        /* ─── CONTENEDOR FORMULARIO EDICIÓN ─── */
+        .form-container {
+            background: #ffffff;
+            box-shadow: 0 4px 24px rgba(123, 45, 139, 0.12);
+            padding: 2rem 2.5rem;
+            max-width: 600px;
+            margin: 2rem auto;
+        }
+
+        .form-container form {
+            max-width: 100%;
+            margin: 0;
+        }
+
+        .form-heading {
+            color: #7B2D8B;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0 0 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid;
+            border-image: linear-gradient(90deg, #E91E8C, #7B2D8B) 1;
+        }
+
+        .form-container input,
+        .form-container select,
+        .form-container textarea {
+            border: 2px solid #e0d8f0;
+            background: #fafafa;
+        }
+
+        .form-container input:focus,
+        .form-container select:focus,
+        .form-container textarea:focus {
+            border-color: #E91E8C;
+            background: #ffffff;
         }
 
         @media (max-width: 768px) {
@@ -420,8 +527,13 @@
                 white-space: nowrap;
             }
 
-            form {
+            form,
+            .form-container {
                 max-width: 100%;
+            }
+
+            .form-container {
+                padding: 1.5rem;
             }
 
             .footer-inner {
@@ -429,13 +541,14 @@
             }
         }
     </style>
+    {% block extra_style %}{% endblock %}
 </head>
 <body>
     <nav>
         <div class="nav-left">
             <img src="{% static 'img/LogoImp.png' %}" alt="SISTEMA IMPORTADORA" class="brand-logo">
             {% if request.session.usuario_id %}
-                <p class="nav-greeting">Hola {{ request.session.usuario_nombre }}</p>
+                <p class="nav-greeting">Hola <span class="nav-username">{{ request.session.usuario_nombre }}</span></p>
             {% endif %}
         </div>
 

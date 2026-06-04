@@ -1,11 +1,12 @@
 {% extends 'app/Base.html' %}
 {% block content %}
-    
-    <form method="post">
-        {% csrf_token %}
-        {{form.as_p}}
-        <button type="submit">Guardar</button>
-    </form>
-
+    <div class="form-container">
+        <h2 class="form-heading">Crear Producto</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{form.as_p}}
+            <button type="submit">Guardar</button>
+        </form>
+    </div>
 
 {% endblock content %}

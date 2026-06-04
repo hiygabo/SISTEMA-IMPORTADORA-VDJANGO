@@ -31,7 +31,13 @@
             <button type="submit">Enivar al cajero</button>
         </form>
     {% else %}
-        <p>El carrito esta vacio</p>
+        <div class="empty-state">
+            <svg viewBox="0 0 24 24" role="img">
+                <path d="M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59L5.25 14H19v-2H7.42l.94-2H17l3-6H5.21L4.27 2H1zm16 16c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+            </svg>
+            <h3>No hay elementos para mostrar</h3>
+            <p>Tu carrito está vacío</p>
+        </div>
     {% endif %}
     <br>
     <a href="{% url 'listarProductos' %}">volver al panel de productos</a>
