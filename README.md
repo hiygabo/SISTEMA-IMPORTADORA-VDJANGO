@@ -61,3 +61,56 @@ python -m venv venv
 
 # 5. Install Django and Oracle utilities (oracledb is the modern driver)
 pip install django oracledb
+
+
+### 4. Configuration in `settings.py`
+
+Navigate to `importadora/importadora/settings.py` and make sure to configure your Oracle connection.
+In the `DATABASES` section, adapt the credentials to match your Oracle system:
+
+```python
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.oracle',
+        'NAME': 'localhost:1521/xe',       # <--- URL or Service Name of your Oracle instance
+        'USER': 'importadora_db',          # <--- Your DB user created earlier
+        'PASSWORD': '123456',              # <--- DB password
+        'HOST': '',
+        'PORT': ''
+    }
+}
+```
+
+### 4. Running the Server
+
+With the script and configuration saved, proceed to start the application:
+
+```bash
+# Navigate to the folder where manage.py lives
+cd importadora
+# Start the server
+python manage.py runserver
+```
+
+Visit **http://127.0.0.1:8000/** in a web browser. The system will detect that you have no active session and will immediately redirect you to the Flat Design secured login page.
+
+### 5. Screenshots
+
+### Login
+![Login](https://i.postimg.cc/QNngWsN1/Captura-de-pantalla-2026-06-12-000524.png)
+
+### Worker Panel
+![Worker Panel](https://i.postimg.cc/ydxgVgZw/Captura-de-pantalla-2026-06-12-000752.png)
+
+### Shopping Cart Panel
+![Shopping Cart](https://i.postimg.cc/zXKjm68Z/Captura-de-pantalla-2026-06-12-000852.png)
+
+### Cashier Panel
+![Cashier Panel](https://i.postimg.cc/3JXgfGFr/Captura-de-pantalla-2026-06-12-000946.png)
+
+### Generated Invoice
+![Invoice](https://i.postimg.cc/wBvLBGKC/Captura-de-pantalla-2026-06-12-001032.png)
+
+### Admin Panel (Basic CRUD)
+![Admin Panel](https://i.postimg.cc/MKmQmSzX/Captura-de-pantalla-2026-06-12-001227.png)
+![Admin Panel](https://i.postimg.cc/1XZ8DWTt/Captura-de-pantalla-2026-06-12-001300.png)
