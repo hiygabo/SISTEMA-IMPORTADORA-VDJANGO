@@ -40,6 +40,26 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        #bg-shapes {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        #bg-shapes .shape {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.08;
+        }
+
+        nav, main, footer {
+            position: relative;
+            z-index: 1;
         }
 
         h1, h2, h3 {
@@ -304,6 +324,21 @@
                         0 1px 4px rgba(0,0,0,0.06);
         }
 
+        .cart-count {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 20px;
+            height: 20px;
+            padding: 0 6px;
+            background: #E91E8C;
+            color: #fff;
+            font-size: 11px;
+            font-weight: 700;
+            border-radius: 10px;
+            margin-left: 4px;
+        }
+
         .producto-card::before {
             content: '';
             position: absolute;
@@ -314,12 +349,24 @@
             background: var(--gradient-brand);
         }
 
-        .producto-img {
+        .producto-img-wrap {
             width: 100%;
-            height: 150px;
-            object-fit: cover;
-            display: block;
+            height: 140px;
+            background: #f8f6fc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             border-bottom: 1px solid #e8e0f0;
+            padding: 12px 20px;
+        }
+
+        .producto-img {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            display: block;
         }
 
         .producto-body {
@@ -544,6 +591,7 @@
     {% block extra_style %}{% endblock %}
 </head>
 <body>
+    <div id="bg-shapes" aria-hidden="true"></div>
     <nav>
         <div class="nav-left">
             <img src="{% static 'img/LogoImp.png' %}" alt="SISTEMA IMPORTADORA" class="brand-logo">
@@ -554,7 +602,13 @@
 
         <div class="nav-right">
             {% if request.session.usuario_rol == 'trabajador' %}
-                <a href="{% url 'verCarrito' %}">Ver carrito</a>
+                <a href="{% url 'verCarrito' %}">Ver carrito
+                    {% with cart=request.session.carrito %}
+                        {% if cart %}
+                            <span class="cart-count">{{ cart.keys|length }}</span>
+                        {% endif %}
+                    {% endwith %}
+                </a>
             {% endif %}
 
             {% if request.session.usuario_id %}
@@ -592,5 +646,142 @@
             <p class="footer-meta">Correo: <a href="mailto:gaboandiaalave@gmail.com">gaboandiaalave@gmail.com</a></p>
         </div>
     </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const shapesContainer = document.getElementById('bg-shapes');
+            const colors = ['#7B2D8B', '#E91E8C', '#00BCD4', '#1A1A2E'];
+            const shapeCount = 12;
+
+            for (let i = 0; i < shapeCount; i++) {
+                const shape = document.createElement('div');
+                shape.className = 'shape';
+                const size = Math.random() * 180 + 60;
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                shape.style.width = size + 'px';
+                shape.style.height = size + 'px';
+                shape.style.background = color;
+                shape.style.left = Math.random() * 100 + '%';
+                shape.style.top = Math.random() * 100 + '%';
+
+                const duration = Math.random() * 20 + 15;
+                const xDrift = (Math.random() - 0.5) * 200;
+                const yDrift = (Math.random() - 0.5) * 200;
+                const scaleVal = Math.random() * 0.5 + 0.8;
+
+                gsap.set(shape, { scale: scaleVal });
+                gsap.to(shape, {
+                    x: xDrift,
+                    y: yDrift,
+                    duration: duration,
+                    repeat: -1,
+                    yoyo: true,
+                    ease: 'sine.inOut'
+                });
+
+                shapesContainer.appendChild(shape);
+            }
+
+            const revealElements = document.querySelectorAll('.page-shell .surface > *');
+            if (revealElements.length) {
+                gsap.from(revealElements, {
+                    y: 40,
+                    opacity: 0,
+                    duration: 0.7,
+                    stagger: 0.1,
+                    ease: 'power3.out',
+                    clearProps: 'all'
+                });
+            }
+
+            const cards = document.querySelectorAll('.producto-card');
+            cards.forEach((card, i) => {
+                gsap.from(card, {
+                    y: 50,
+                    opacity: 0,
+                    duration: 0.5,
+                    delay: i * 0.08,
+                    ease: 'power2.out',
+                    clearProps: 'all'
+                });
+
+                card.addEventListener('mouseenter', () => {
+                    gsap.to(card, {
+                        scale: 1.03,
+                        boxShadow: '0 12px 40px rgba(123,45,139,0.25)',
+                        duration: 0.3,
+                        ease: 'power2.out'
+                    });
+                });
+                card.addEventListener('mouseleave', () => {
+                    gsap.to(card, {
+                        scale: 1,
+                        boxShadow: '0 4px 24px rgba(123,45,139,0.12), 0 1px 4px rgba(0,0,0,0.06)',
+                        duration: 0.3,
+                        ease: 'power2.out'
+                    });
+                });
+            });
+
+            const tableRows = document.querySelectorAll('table tbody tr');
+            if (tableRows.length) {
+                gsap.from(tableRows, {
+                    x: -20,
+                    opacity: 0,
+                    duration: 0.4,
+                    stagger: 0.04,
+                    ease: 'power2.out',
+                    clearProps: 'all'
+                });
+            }
+
+            const loginForm = document.querySelector('.login-form');
+            if (loginForm) {
+                gsap.from(loginForm, {
+                    scale: 0.92,
+                    opacity: 0,
+                    duration: 0.6,
+                    ease: 'back.out(1.7)',
+                    clearProps: 'all'
+                });
+            }
+
+            const formContainers = document.querySelectorAll('.form-container');
+            formContainers.forEach((fc) => {
+                gsap.from(fc, {
+                    y: 30,
+                    opacity: 0,
+                    duration: 0.6,
+                    ease: 'power3.out',
+                    clearProps: 'all'
+                });
+            });
+
+            const navEl = document.querySelector('nav');
+            if (navEl) {
+                gsap.from(navEl, {
+                    y: -30,
+                    opacity: 0,
+                    duration: 0.5,
+                    ease: 'power3.out',
+                    clearProps: 'all'
+                });
+            }
+
+            const footerEl = document.querySelector('.site-footer');
+            if (footerEl) {
+                gsap.from(footerEl, {
+                    y: 30,
+                    opacity: 0,
+                    duration: 0.5,
+                    ease: 'power3.out',
+                    clearProps: 'all'
+                });
+            }
+        });
+    </script>
+    {% block extra_scripts %}{% endblock %}
 </body>
 </html>

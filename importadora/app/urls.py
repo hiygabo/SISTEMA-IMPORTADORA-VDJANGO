@@ -14,6 +14,9 @@ urlpatterns = [
     path('cobrarPedido/<int:id_pedido>/', views.cobrarPedido, name='cobrarPedido'),
     path('confirmarPedido/', views.confirmarPedido, name='confirmarPedido' ),
     path('agregarAlcarrito/<int:id_producto>/', views.agregarAlCarrito, name='agregarAlCarrito'),
+    path('agregarAlcarritoAjax/<int:id_producto>/', views.agregarAlCarrito_ajax, name='agregarAlCarritoAjax'),
     path('verCarrito/', views.verCarrito, name='verCarrito'),
     path('factura/pdf/<int:id_pedido>', views.factura_pdf, name ='factura_pdf'),
+    path('eliminarDelcarrito/<int:id_producto>/', views.elimianarDelCarrito, name='eliminarDelCarrito'),
+    path('eliminarDelcarritoAjax/<int:id_producto>/', views.eliminarDelCarrito_ajax, name='eliminarDelCarritoAjax'),
 ]

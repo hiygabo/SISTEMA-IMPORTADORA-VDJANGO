@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect, get_object_or_404
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.contrib import messages
 from .models import *
 from .forms import *
@@ -152,7 +152,7 @@ def agregarAlCarrito(request, id_producto):
     else:
         carrito[id_prod_str] =1
     request.session['carrito'] = carrito
-    return redirect ('listarProductos')
+    return redirect (request.META.get('HTTP_REFERER', 'listarProductos'))
     
 def verCarrito(request):
     if request.session.get('usuario_rol') != 'trabajador':
@@ -195,4 +195,58 @@ def factura_pdf(request, id_pedido):
     if pisa_status.err:
         return HttpResponse('Error al generar el pdf', status=500)
     return response
-    
+
+def elimianarDelCarrito(request, id_producto):
+    if request.session.get('usuario_rol') != 'trabajador':
+        return redirect('login')
+    carrito = request.session.get('carrito', {})
+    id_prod_str = str(id_producto)
+    if id_prod_str in carrito:
+        if carrito[id_prod_str] > 1:
+            carrito[id_prod_str] -=1
+        else:
+            del carrito[id_prod_str]
+        request.session['carrito'] = carrito
+    return redirect(request.META.get('HTTP_REFERER', 'verCarrito'))
+
+def agregarAlCarrito_ajax(request, id_producto):
+    if request.session.get('usuario_rol') != 'trabajador':
+        return JsonResponse({'error': 'No autorizado'}, status=403)
+    carrito = request.session.get('carrito', {})
+    id_str = str(id_producto)
+    carrito[id_str] = carrito.get(id_str, 0) + 1
+    request.session['carrito'] = carrito
+    total_items = sum(carrito.values())
+    return JsonResponse({'success': True, 'cantidad': total_items})
+
+def eliminarDelCarrito_ajax(request, id_producto):
+    if request.session.get('usuario_rol') != 'trabajador':
+        return JsonResponse({'error': 'No autorizado'}, status=403)
+    carrito = request.session.get('carrito', {})
+    id_str = str(id_producto)
+    if id_str in carrito:
+        if carrito[id_str] > 1:
+            carrito[id_str] -= 1
+        else:
+            del carrito[id_str]
+        request.session['carrito'] = carrito
+
+    productosEnCarrito = []
+    totalPedido = 0
+    for id_prod_str, cantidad in carrito.items():
+        producto = Producto.objects.get(id_producto=float(id_prod_str))
+        subtotal = producto.precio * cantidad
+        totalPedido += subtotal
+        productosEnCarrito.append({
+            'id': producto.id_producto,
+            'nombre': producto.nombre,
+            'precio': float(producto.precio),
+            'cantidad': cantidad,
+            'subtotal': float(subtotal),
+        })
+    return JsonResponse({
+        'success': True,
+        'items': productosEnCarrito,
+        'total': float(totalPedido),
+        'isEmpty': len(carrito) == 0,
+    })

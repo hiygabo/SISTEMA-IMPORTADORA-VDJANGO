@@ -1,4 +1,29 @@
 {% extends "app/Base.html" %}
+
+{% block extra_style %}
+<style>
+    .btn-add-cart {
+        background: var(--gradient-primary);
+        color: #fff;
+        border: none;
+        font-family: "Poppins", sans-serif;
+        font-weight: 600;
+        padding: 10px 20px;
+        cursor: pointer;
+        transition: opacity 0.2s ease;
+    }
+
+    .btn-add-cart:disabled {
+        opacity: 0.6;
+        cursor: default;
+    }
+
+    .btn-add-cart.added {
+        background: #27ae60;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <div style="margin-bottom: 20px; display: flex; justify-content: flex-end;">
         <form method="GET" action="{% url 'listarProductos' %}" style="display: flex; gap: 10px; margin: 0; padding: 0; width: 100%; max-width: 450px; background: transparent; border: none;">
@@ -15,7 +40,9 @@
     <div class="productos-grid">
         {% for p in productos  %}
             <div class="producto-card">
-                <img src="{{ p.imagen_url }}" alt="{{ p.nombre }}" class="producto-img">
+                <div class="producto-img-wrap">
+                    <img src="{{ p.imagen_url }}" alt="{{ p.nombre }}" class="producto-img">
+                </div>
                 <div class="producto-body">
                     <h3 class="producto-nombre">{{ p.nombre }}</h3>
                     <p class="producto-precio">Bs. {{ p.precio }}</p>
@@ -26,7 +53,7 @@
                             <a href="{% url 'eliminarProducto' p.id_producto %}" class="btn btn-secondary">Eliminar</a>
                         {% endif %}
                         {% if request.session.usuario_rol == 'trabajador' %}
-                            <a href="{% url 'agregarAlCarrito' p.id_producto %}" class="btn">Agregar al carrito</a>
+                            <button class="btn-add-cart" data-id="{{ p.id_producto }}">Agregar al carrito</button>
                         {% endif %}
                     </div>
                 </div>
@@ -43,5 +70,35 @@
     </div>
 
 {% endblock content %}
+
+{% block extra_scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.btn-add-cart').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const id = btn.dataset.id;
+                btn.disabled = true;
+                btn.textContent = '✓';
+                btn.classList.add('added');
+
+                try {
+                    const res = await fetch(`/agregarAlcarritoAjax/${id}/`);
+                    const data = await res.json();
+                    const badge = document.querySelector('.cart-count');
+                    if (badge) badge.textContent = data.cantidad;
+                } catch {
+                    btn.textContent = 'Error';
+                }
+
+                setTimeout(() => {
+                    btn.disabled = false;
+                    btn.textContent = 'Agregar al carrito';
+                    btn.classList.remove('added');
+                }, 1200);
+            });
+        });
+    });
+</script>
+{% endblock %}
 
 
